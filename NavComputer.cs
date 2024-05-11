@@ -122,11 +122,15 @@ public class NavComputer
 
     void AngleController()
     {
-        if (_pitchPID != null) _rotSpeedPYR.X = _pitchPID.Control(_rotationPYR.X);
-        if (_yawPID != null) _rotSpeedPYR.Y = _yawPID.Control(_rotationPYR.Y);
+        /*if (_pitchPID != null) _rotSpeedPYR.X = _pitchPID.Control(_rotationPYR.X);
+        if (_yawPID != null) _rotSpeedPYR.Y = _yawPID.Control(_rotationPYR.Y);*/
+        _rotSpeedPYR.X = _rotationPYR.X;
+        _rotSpeedPYR.Y = _rotationPYR.Y;
+        _rotSpeedPYR.Z = _rotationPYR.Z;
 
         if (Math.Abs(_rotationPYR.X) < _slowdownAngle) _rotSpeedPYR.X = _updatesPerSecond * .5 * _rotationPYR.X;
         if (Math.Abs(_rotationPYR.Y) < _slowdownAngle) _rotSpeedPYR.Y = _updatesPerSecond * .5 * _rotationPYR.Y;
+        if (Math.Abs(_rotSpeedPYR.Z) < _slowdownAngle) _rotSpeedPYR.Z = _updatesPerSecond * .5 * _rotationPYR.Z;
     }
 
     void ApplyGyroOverride(bool bOverride = true)
