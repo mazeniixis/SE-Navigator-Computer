@@ -10,6 +10,8 @@ public class NavComputer
     public AlignMode AlignMode = AlignMode.None;
     NavStatus _navStatus = NavStatus.Off;
 
+    int precision = 6;
+
     // thrusters list
     readonly List<IMyThrust> _forwardThrusts = new List<IMyThrust>();
     readonly List<IMyThrust> _backwardThrusts = new List<IMyThrust>();
@@ -71,7 +73,7 @@ public class NavComputer
     {
         if (Vector3D.IsZero(_upVector))
             return false;
-        SetForwardVector(_upVector.Cross(_refBlock.WorldMatrix.Left));
+        SetForwardVector(_refBlock.WorldMatrix.Left.Cross(_upVector));
         return true;
     }
 
@@ -131,16 +133,10 @@ public class NavComputer
     {
         var worldRotationPYR = Vector3D.TransformNormal(_rotSpeedPYR, _refBlock.WorldMatrix);
 
-        for (int g = 0; g < myGyros.Count; g++)
+        Debug("We are here!");
+
+        foreach (var gyro in myGyros)
         {
-            if (myGyros[g].Closed)
-            {
-                myGyros.RemoveAt(g);
-                continue;
-            }
-
-            var gyro = myGyros[g];
-
             if (!bOverride)
             {
                 gyro.GyroOverride = false;
@@ -177,9 +173,9 @@ public class NavComputer
     public void ReadData()
     {
         // this is to read the data that I otherwise cannot
-        Debug($"Forward Vector: {_forwardVector}");
-        Debug($"Rotation PYR: {_rotationPYR}");
-        Debug($"Rotation Speed PYR: {_rotSpeedPYR}");
+        Debug($"Forward Vector: {Vector3D.Round(_forwardVector, precision)}");
+        Debug($"Rotation PYR: {Vector3D.Round(_rotationPYR, precision)}");
+        Debug($"Rotation Speed PYR: {Vector3D.Round(_rotSpeedPYR, precision)}");
     }
 
     public void SetStatus(NavStatus navStatus)
